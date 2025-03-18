@@ -1,0 +1,84 @@
+<?php $supplierInsights = extract_json_data(['supplierInsights']); ?>
+<?php if ($supplierInsights !== null && isset($supplierInsights['suppliers']) && sizeof($supplierInsights['suppliers']) > 0) { ?>
+<section class="section supplier-section">
+    <div class="section-header">
+        <h2>Supplier Insights</h2>
+        <?php if (get_current_tab() === 'dashboard') { ?>
+        <button class="btn-text" onClick="loadContent('suppliers');">View All</button>
+        <?php } else { ?>
+        <button class="btn-text" onClick="loadContent('dashboard');">Back to Dashboard</button>
+        <?php } ?>
+    </div>
+    
+    <div class="supplier-content">
+        <div class="supplier-assessment">
+        <div class="chip">Assessment</div>
+        <h3 id="supplier-assessment-title"><?php echo $supplierInsights['assessment']['title']; ?></h3>
+        <span class="markdown-container">
+            <?php echo $supplierInsights['assessment']['summary']; ?>
+        </span>
+        <?php if (get_current_tab() === 'suppliers') { ?>
+            <span class="markdown-container">
+                <?php echo $supplierInsights['assessment']['detailed_report']; ?>
+            </span>
+        <?php } ?>
+        <?php if (get_current_tab() === 'dashboard') { ?>
+        <button class="btn-primary" onClick="loadContent('suppliers');">View Detailed Report</button>
+        <?php } ?>
+        </div>
+        
+        <div class="supplier-table-container">
+        <table class="supplier-table">
+            <thead>
+            <tr>
+                <th>Supplier Name</th>
+                <th>Spend</th>
+                <th>Risk Score</th>
+                <th>Risk Trend</th>
+                <th>Financial Health</th>
+                <th>ESG Score</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php 
+            $count = 0;
+            foreach ($supplierInsights['suppliers'] as $supplier) {
+                $count++;
+
+                if ($count >= 5 && get_current_tab() === 'dashboard') {
+                    break;
+                }
+                ?>
+            <tr <?php if ($supplier['fraudRisk'] == true) { ?>class="fraud-risk"<?php } ?>>
+                <td class="supplier-name">
+                <?php echo $supplier['name']; ?>
+                <?php if ($supplier['fraudRisk'] == true) { ?>
+                    <span class="fraud-badge">Fraud Risk</span>
+                <?php } ?>
+                </td>
+                <td class="spend"><?php echo convert_amount($supplier['spend']); ?></td>
+                <td class="risk-score"><?php echo (trim($supplier['riskScore']) !== '' ? $supplier['riskScore'] : '-'); ?></td>
+
+                <?php if ($supplier['riskTrend'] == 'decreasing') { ?>
+                <td class="risk-trend decreasing"><i class="fas fa-arrow-down"></i></td>
+                <?php } elseif ($supplier['riskTrend'] == 'increasing') { ?>
+                <td class="risk-trend increasing"><i class="fas fa-arrow-up"></i></td>
+                <?php } else { ?>
+                <td class="risk-trend">-</td>
+                <?php } ?>
+                <td class="financial-health"><?php echo (trim($supplier['financialHealth']) !== '' ? $supplier['financialHealth'] : '-'); ?></td>
+                <td class="esg-score"><?php echo (trim($supplier['esgScore']) !== '' ? $supplier['esgScore'] : '-'); ?></td>
+                <?php if ($supplier['tracked'] == true) { ?>
+                <td class="status tracked">Tracked</td>
+                <?php } else { ?>
+                <td class="status untracked">Untracked</td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </section>
+    <?php } ?>

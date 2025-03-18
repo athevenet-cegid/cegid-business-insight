@@ -1,0 +1,56 @@
+<?php $newsSentiment = extract_json_data(['newsSentiment', 'news']); ?>
+<?php if ($newsSentiment !== null && sizeof($newsSentiment) > 0) { ?>
+<section class="section news-section">
+    <div class="section-header">
+      <h2>News & Sentiment</h2>
+      <?php if (get_current_tab() === 'dashboard') { ?>
+      <button class="btn-text" onClick="loadContent('news');">View All</button>
+      <?php } else { ?>
+        <button class="btn-text" onClick="loadContent('dashboard');">Back to Dashboard</button>
+        <?php } ?>
+    </div>
+    
+    <div class="news-list">
+      <?php 
+      $count = 0;
+      foreach ($newsSentiment as $key => $news) {
+        $count++;
+
+        if ($count >= 4 && get_current_tab() === 'dashboard') {
+            break;
+        }
+    ?>
+      <div class="news-item">
+        <div class="news-meta">
+          <span class="source" id="news-source-<?php echo $key; ?>"><?php echo $news['source']; ?></span>
+          <span class="date" id="news-date-<?php echo $key; ?>"><?php echo format_date($news['date'], false); ?></span>
+        </div>
+        <h3 id="news-title-<?php echo $key; ?>"><?php echo $news['title']; ?></h3>
+        <span class="markdown-container"><?php echo $news['summary']; ?></span>
+        <?php if (get_current_tab() === 'news') { ?>
+        <span class="markdown-container"><?php echo $news['detailed_report']; ?></span>
+        <?php } ?>
+        <div class="tags">
+          <?php if (in_array('Positive', $news['tags']['sentiment'])) { ?>
+            <span class="tag positive">Positive</span>
+          <?php } elseif (in_array('Negative', $news['tags']['sentiment'])) { ?>
+            <span class="tag negative">Negative</span>
+          <?php } ?>
+          <?php foreach ($news['tags']['relevance'] as $tag) { ?>
+            <span class="tag"><?php echo $tag; ?></span>
+          <?php } ?>
+          <?php foreach ($news['tags']['risk_type'] as $tag) { ?>
+            <span class="tag"><?php echo $tag; ?></span>
+          <?php } ?>
+          <?php foreach ($news['tags']['geographic_scope'] as $tag) { ?>
+            <span class="tag"><?php echo $tag; ?></span>
+          <?php } ?>
+          <?php foreach ($news['tags']['business_function'] as $tag) { ?>
+            <span class="tag"><?php echo $tag; ?></span>
+          <?php } ?>
+        </div>
+      </div>
+      <?php } ?>
+    </div>
+  </section>
+  <?php } ?>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cegid Business Insights</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/markdown.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script type="text/javascript" src="<?php echo get_last_modified('js/jquery.js'); ?>"></script>
+  <script type="text/javascript" src="<?php echo get_last_modified('js/jquery-ui.js'); ?>"></script>
+  <link rel="icon" type="image/x-icon" href="https://www.cegid.com/fr/wp-content/themes/cegid/assets/dist/images/favicon.ico" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+        function loadContent(tab) {
+            $.ajax({
+                url: 'index.php?tab=' + tab,
+                success: function(data) {
+                    $('#content').html(data);
+                }
+            });
+        }
+
+        function loadSubcontent(subtab) {
+            $.ajax({
+                url: 'index.php?subtab=' + subtab,
+                success: function(data) {
+                    $('#content').html(data);
+                }
+            });
+        }
+
+        function loadArchive(archive_id) {
+            $.ajax({
+                url: 'index.php?archive_id=' + archive_id,
+                success: function(data) {
+                    $('#content').html(data);
+                }
+            });
+        }
+    </script>
+</head>
+<body id="content">
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <div class="logo">
+          <span>C</span>
+        </div>
+        <h2>Cegid Business Insights</h2>
+      </div>
+      
+      <nav class="nav-menu">
+        <ul>
+          <li <?php if (get_current_tab() === 'dashboard') { ?>class="active"<?php } ?>><a href="#" onClick="loadContent('dashboard');"><i class="fas fa-chart-line"></i><span>Dashboard</span></a></li>
+          <?php if (has_data(['newsSentiment', 'news']) === true) { ?>
+          <li <?php if (get_current_tab() === 'news') { ?>class="active"<?php } ?>><a href="#" onClick="loadContent('news');"><i class="fas fa-newspaper"></i><span>News</span></a></li>
+          <?php } ?>
+          <?php if (has_data(['marketIndicators']) === true) { ?>
+          <li <?php if (get_current_tab() === 'markets') { ?>class="active"<?php } ?>><a href="#" onClick="loadContent('markets');"><i class="fas fa-building"></i><span>Markets</span></a></li>
+          <?php } ?>
+          <?php if (has_data(['supplierInsights', 'suppliers']) === true) { ?>
+          <li <?php if (get_current_tab() === 'suppliers') { ?>class="active"<?php } ?>><a href="#" onClick="loadContent('suppliers');"><i class="fas fa-users"></i><span>Suppliers</span></a></li>
+          <?php } ?>
+          <?php if (has_data(['alerts']) === true) { ?>
+          <li <?php if (get_current_tab() === 'alerts') { ?>class="active"<?php } ?>><a href="#" onClick="loadContent('alerts');"><i class="fas fa-bell"></i><span>Alerts</span></a></li>
+          <?php } ?>
+          <li <?php if (get_current_tab() === 'archives') { ?>class="active"<?php } ?>><a href="#" onClick="loadContent('archives');"><i class="fas fa-archive"></i><span>Archives</span></a></li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="#"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Header with date and user info -->
+      <header class="header">
+        <div class="header-title">
+          <h1 id="dashboard-name"><?php echo extract_json_data(['dashboard', 'name']); ?></h1>
+          <p id="dashboard-date">
+            <?php echo format_date(extract_json_data(['dashboard', 'date'])); ?>
+            &nbsp;&nbsp;
+            <?php if ($_SESSION['hackathon']->is_last_report === true) { ?>
+            <span class="tag positive">Last report</span>
+            <?php } else { ?>
+            <span class="tag">Archive</span>
+            <?php } ?>
+          </p>
+        </div>
+        
+        <div class="header-actions">
+          <button class="btn-icon"><i class="fas fa-search"></i></button>
+          <button class="btn-icon"><i class="fas fa-bell"></i><span class="notification-badge">7</span></button>
+          <div class="user-profile">
+            <img src="https://i.pravatar.cc/150?img=12" alt="User Profile">
+            <span>Jean Duchemin</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Dashboard Content -->
+      <div class="dashboard-content">
+        <?php if (get_current_tab() === 'dashboard') { ?>
+        <?php if (trim(get_current_subtab()) !== '') { ?>
+          <?php $keyInsight = extract_json_data(['keyInsights', get_current_subtab()]); ?>
+          <section class="section key-insights-section">
+            <div class="insight-card <?php echo get_current_subtab(); ?> detailed">
+              <div class="insight-header">
+                <div class="chip"><?php echo get_current_subtab(); ?></div>
+                <!--<div class="score" id="strategic-score"><?php echo $keyInsight['score']; ?></div>-->
+              </div>
+              <h3 id="strategic-title"><?php echo $keyInsight['title']; ?></h3>
+              <span class="markdown-container">
+                <?php echo $keyInsight['summary']; ?></p>
+              </span>
+              <span class="markdown-container">
+                <?php echo $keyInsight['detailed_report']; ?>
+              </span>
+              <button class="btn-text-small" onClick="loadContent('dashboard');">Back to Dashboard</button>
+            </div>
+          </section>
+        <?php } else { ?>
+          <!-- Key Insights Section -->
+          <?php $keyInsights = extract_json_data(['keyInsights']); ?>
+          <?php if ($keyInsights !== null && sizeof($keyInsights) > 0) { ?>
+          <section class="section key-insights-section">
+            <div class="section-header">
+              <h2>Key Insights</h2>
+            </div>
+            
+            <div class="insights-cards">
+              <?php foreach ($keyInsights as $key => $keyInsight) { ?>
+              <div class="insight-card <?php echo $key; ?>">
+                <div class="insight-header">
+                  <div class="chip"><?php echo $key; ?></div>
+                  <!--<div class="score" id="strategic-score"><?php echo $keyInsight['score']; ?></div>-->
+                </div>
+                <h3 id="strategic-title"><?php echo $keyInsight['title']; ?></h3>
+                <span class="markdown-container">
+                  <?php echo $keyInsight['summary']; ?>
+                </span>
+                <button class="btn-text-small" onClick="loadSubcontent('<?php echo $key; ?>');">View Report</button>
+              </div>
+              <?php } ?>
+            </div>
+          </section>
+          <?php } ?>
+          
+          <!-- Market Indicators Section -->
+          <?php include 'html/markets.html'; ?>
+          
+          <?php $newsSentiment = extract_json_data(['newsSentiment', 'news']); ?>
+          <?php $alerts = extract_json_data(['alerts']); ?>
+          
+          <!-- Bottom Row: News and Alerts -->
+          <div <?php if ($newsSentiment !== null && sizeof($newsSentiment) > 0 && $alerts !== null && sizeof($alerts) > 0) { ?>class="bottom-row"<?php } ?>>
+            <!-- News Section -->
+            <?php include 'html/news.html'; ?>
+            
+            <!-- Alerts Section -->
+            <?php include 'html/alerts.html'; ?>
+          </div>
+          
+          <!-- Supplier Section -->
+          <?php include 'html/suppliers.html'; ?>
+          <?php } ?>
+        <?php } elseif (get_current_tab() === 'markets') { ?>
+          <?php include 'html/markets.html'; ?>
+        <?php } elseif (get_current_tab() === 'news') { ?>
+          <?php include 'html/news.html'; ?>
+        <?php } elseif (get_current_tab() === 'alerts') { ?>
+          <?php include 'html/alerts.html'; ?>
+        <?php } elseif (get_current_tab() === 'suppliers') { ?>
+          <?php include 'html/suppliers.html'; ?>
+        <?php } elseif (get_current_tab() === 'archives') { ?>
+          <section class="section news-section">
+            <div class="section-header">
+              <h2>Archives</h2>
+                <button class="btn-text" onClick="loadContent('dashboard');">Back to Dashboard</button>
+            </div>
+            <?php $archives = get_json_data_list(); ?>
+            <div class="news-list">
+              <?php
+              $first = true;
+              foreach ($archives as $archive) { ?>
+              <div class="news-item">
+                <div class="news-meta">
+                  <?php if ($first) { ?>
+                  <span class="tag positive">Last report</span>
+                  <?php $first = false; } else { ?>
+                  <span class="tag">Archive</span>
+                  <?php } ?>
+                  <span class="date">Created: <?php echo format_date($archive['creation_date']); ?></span>
+                </div>
+                <h3>Archive n°<?php echo $archive['id']; ?></h3>
+                <span class="markdown-container">
+                  <p>
+                    Stored: <?php echo format_date($archive['json_date']); ?>
+                    <br/>
+                    Datas from: <?php echo (trim($archive['data_date']) !== '' ? format_date($archive['data_date']) : 'Unknown'); ?>
+                  </p>
+                </span>
+                <button class="btn-primary" onClick="loadArchive('<?php echo $archive['id']; ?>');">Load this report</button>
+              </div>
+              <?php } ?>
+            </div>
+          </section>
+        <?php } ?>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      // Tab switching functionality
+      const tabs = document.querySelectorAll('.tab');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+      
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => {
+          // Remove active class from all tabs and panes
+          tabs.forEach(t => t.classList.remove('active'));
+          tabPanes.forEach(p => p.classList.remove('active'));
+          
+          // Add active class to clicked tab and corresponding pane
+          tab.classList.add('active');
+          tabPanes[index].classList.add('active');
+        });
+      });
+      
+      // Sample Chart Data (for demonstration)
+      const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        },
+        elements: {
+          line: {
+            tension: 0.4,
+            borderWidth: 2,
+          },
+          point: {
+            radius: 0
+          }
+        }
+      };
+      
+      // Random data for demonstration
+      function generateData() {
+        return Array.from({ length: 20 }, () => Math.floor(Math.random() * 100));
+      }
+      
+      <?php if (get_current_tab() === 'dashboard' || get_current_tab() === 'markets') { ?>
+      // Create stock charts
+      const charts = ['S_P500Chart', 'NASDAQChart', 'DOWChart'];
+      charts.forEach(id => {
+        const ctx = document.getElementById(id).getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: Array.from({ length: 20 }, (_, i) => i),
+            datasets: [{
+              data: generateData(),
+              borderColor: '#0046FE',
+              backgroundColor: 'rgba(0, 70, 254, 0.1)',
+              fill: true
+            }]
+          },
+          options: chartOptions
+        });
+      });
+      
+      // Create forex charts (initially hidden)
+      const forexCharts = [<?php echo "'".implode("', '", $listForex)."'"; ?>];
+      forexCharts.forEach(id => {
+        var trend = $('#'+id).attr('data-trend');
+        const ctx = document.getElementById(id).getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: Array.from({ length: 20 }, (_, i) => i),
+            datasets: [{
+              data: generateData(),
+              borderColor: trend === 'down' ? '#BC0F2D' : (trend === 'up' ? '#0046FE' : '#002C52'),
+              backgroundColor: trend === 'down' ? 'rgba(188, 15, 45, 0.1)' : (trend === 'up' ? 'rgba(0, 70, 254, 0.1)' : 'rgba(0, 44, 82, 0.1)'),
+              fill: true
+            }]
+          },
+          options: chartOptions
+        });
+      });
+      
+      // Create economic charts (initially hidden)
+      const economicCharts = [<?php echo "'".implode("', '", $listEconomic)."'"; ?>];
+      economicCharts.forEach(id => {
+        var trend = $('#'+id).attr('data-trend');
+        const ctx = document.getElementById(id).getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: Array.from({ length: 20 }, (_, i) => i),
+            datasets: [{
+              data: generateData(),
+              borderColor: trend === 'down' ? '#BC0F2D' : (trend === 'up' ? '#0046FE' : '#376A1F'),
+              backgroundColor: trend === 'down' ? 'rgba(188, 15, 45, 0.1)' : (trend === 'up' ? 'rgba(0, 70, 254, 0.1)' : 'rgba(55, 106, 31, 0.1)'),
+              fill: true
+            }]
+          },
+          options: chartOptions
+        });
+      });
+      <?php } ?>
+    });
+  </script>
+</body>
+</html>

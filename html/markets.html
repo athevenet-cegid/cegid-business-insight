@@ -1,0 +1,130 @@
+<?php
+$marketIndicators = extract_json_data(['marketIndicators']);
+$stockMarkets = extract_json_data(['marketIndicators', 'stockMarkets']);
+$forex = extract_json_data(['marketIndicators', 'forex']);
+$economic = extract_json_data(['marketIndicators', 'economic']);
+?>
+<?php if ($marketIndicators !== null && sizeof($marketIndicators) > 0) { ?>
+<section class="section market-indicators-section">
+<div class="section-header">
+    <h2>Market Indicators</h2>
+    <div class="tabs">
+    <button class="tab active">Stocks</button>
+    <button class="tab">Forex</button>
+    <button class="tab">Economic</button>
+    </div>
+</div>
+
+<div class="tab-content">
+    <!-- Stocks Tab Content -->
+    <div class="tab-pane active">
+    <div class="market-grid">
+        <?php foreach ($stockMarkets['current'] as $name => $data) { ?>
+        <div class="market-card">
+        <div class="market-card-header">
+            <h3><?php if ($name === 'S_P500') { echo "S&P 500"; } else { echo $name; } ?></h3>
+            <span class="<?php if (substr($data['change'], 0, 1) == '+') { ?>positive<?php } else { ?>negative<?php } ?>" id="<?php echo $name; ?>-change"><?php echo $data['change']; ?></span>
+        </div>
+        <div class="market-value" id="<?php echo $name; ?>-value"><?php echo $data['value']; ?></div>
+        <div class="chart-container">
+            <canvas id="<?php echo $name; ?>Chart"></canvas>
+        </div>
+        </div>
+        <?php } ?>
+        
+        <div class="market-insights-card">
+        <div class="chip">Assessment</div>
+        <h3 id="stock-assessment-title"><?php echo $stockMarkets['assessment']['title']; ?></h3>
+        <span class="markdown-container"><?php echo $stockMarkets['assessment']['summary']; ?></span>
+        <?php if (get_current_tab() === 'markets') { ?>
+        <span class="markdown-container"><?php $stockMarkets['assessment']['detailed_report']; ?></span>
+        <?php } else { ?>
+            <button class="btn-text-small" onClick="loadContent('markets');">Read Analysis</button>
+        <?php } ?>
+    </div>
+    </div>
+    </div>
+    
+    <!-- Forex Tab Content (initially hidden) -->
+    <div class="tab-pane">
+    <div class="market-grid">
+        <?php 
+        $listForex = [];
+        foreach ($forex['current'] as $name => $data) {
+        $forexName = strtolower(str_replace('/', '', $name));
+        ?>
+        <div class="market-card">
+        <div class="market-card-header">
+            <h3><?php echo $name; ?></h3>
+            <span class="trend <?php echo $data['trend']; ?>">
+            <?php if ($data['trend'] == 'up') { ?>
+                <span class="trend up"><i class="fas fa-arrow-up"></i></span>
+            <?php } elseif ($data['trend'] == 'down') { ?>
+                <span class="trend down"><i class="fas fa-arrow-down"></i></span>
+            <?php } else { ?>
+                <i class="fas fa-equals"></i>
+            <?php } ?>
+            </span>
+        </div>
+        <div class="market-value" id="<?php echo $forexName; ?>-value"><?php echo $data['rate']; ?></div>
+        <div class="chart-container">
+            <?php $listForex[] = $forexName.'Chart'; ?>
+            <canvas data-trend="<?php echo $data['trend']; ?>" id="<?php echo $forexName; ?>Chart"></canvas>
+        </div>
+        </div>
+        <?php } ?>
+        
+        <div class="market-insights-card">
+        <div class="chip">Assessment</div>
+        <h3 id="forex-assessment-title"><?php echo $forex['assessment']['title']; ?></h3>
+        <span class="markdown-container"><?php echo $forex['assessment']['summary']; ?></span>
+        <?php if (get_current_tab() === 'markets') { ?>
+            <span class="markdown-container"><?php echo $forex['assessment']['detailed_report']; ?></span>
+        <?php } else { ?>
+            <button class="btn-text-small" onClick="loadContent('markets');">Read Analysis</button>
+        <?php } ?>
+        </div>
+    </div>
+    </div>
+    
+    <!-- Economic Tab Content (initially hidden) -->
+    <div class="tab-pane">
+    <div class="market-grid">
+        <?php 
+        $listEconomic = [];
+        foreach ($economic['current']['FR'] as $name => $data) {
+        ?>
+        <div class="market-card">
+        <div class="market-card-header">
+            <h3><?php echo ucfirst($name); ?></h3>
+            <?php if ($data['trend'] == 'up') { ?>
+            <span class="trend up"><i class="fas fa-arrow-up"></i></span>
+            <?php } elseif ($data['trend'] == 'down') { ?>
+            <span class="trend down"><i class="fas fa-arrow-down"></i></span>
+            <?php } else { ?>
+            <i class="fas fa-equals"></i>
+            <?php } ?>
+        </div>
+        <div class="market-value" id="<?php echo $name; ?>-value"><?php echo $data['value']; ?><small><?php echo $data['unit']; ?></small></div>
+        <div class="chart-container">
+            <?php $listEconomic[] = $name.'Chart'; ?>
+            <canvas data-trend="<?php echo $data['trend']; ?>" id="<?php echo $name; ?>Chart"></canvas>
+        </div>
+        </div>
+        <?php } ?>
+        
+        <div class="market-insights-card">
+        <div class="chip">Assessment</div>
+        <h3 id="economic-assessment-title"><?php echo $economic['assessment']['title']; ?></h3>
+        <span class="markdown-container"><?php echo $economic['assessment']['summary']; ?></span>
+        <?php if (get_current_tab() === 'markets') { ?>
+            <span class="markdown-container"><?php echo $economic['assessment']['detailed_report']; ?></span>
+        <?php } else { ?>
+            <button class="btn-text-small" onClick="loadContent('markets');">Read Analysis</button>
+        <?php } ?>
+        </div>
+    </div>
+    </div>
+</div>
+</section>
+<?php } ?>

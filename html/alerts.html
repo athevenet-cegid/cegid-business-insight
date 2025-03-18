@@ -1,0 +1,33 @@
+<?php $alerts = extract_json_data(['alerts']); ?>
+<?php if ($alerts !== null && sizeof($alerts) > 0) { ?>
+<section class="section alerts-section">
+    <div class="section-header">
+    <h2>Alerts</h2>
+    <?php if (get_current_tab() === 'dashboard') { ?>
+    <button class="btn-text" onClick="loadContent('alerts');">View All</button>
+    <?php } else { ?>
+    <button class="btn-text" onClick="loadContent('dashboard');">Back to Dashboard</button>
+    <?php } ?>
+    </div>
+    
+    <div class="alerts-list">
+    <?php 
+    $count = 0;
+    foreach ($alerts as $key => $alert) {
+        $count++;
+        if ($count >= 6 && get_current_tab() === 'dashboard') {
+            break;
+        }
+    ?>
+    <div class="alert-item">
+        <div class="alert-time" id="alert-time-<?php echo $key; ?>"><?php echo format_date($alert['date'], true, true); ?></div>
+        <div class="alert-content">
+        <h4 id="alert-title-<?php echo $key; ?>"><?php echo $alert['title']; ?></h4>
+        <p id="alert-desc-<?php echo $key; ?>"><?php echo $alert['description']; ?></p>
+        </div>
+        <div class="alert-tag" id="alert-tag-<?php echo $key; ?>"><?php echo $alert['watchlist']; ?></div>
+    </div>
+    <?php } ?>
+    </div>
+</section>
+<?php } ?>
