@@ -2,12 +2,43 @@
 
 require_once '../lib/func.php';
 
-//$id = create_json_data();
+$company_data = json_decode(file_get_contents('../json/Hackathon_CompanyProfile.json'), true);
 
-$search_path = __DIR__.'/../hackaton-search/search.py';
-$output = null;
-$result_code  = null;
-$test = exec('docker exec python-service python3 '.$search_path, $output, $result_code);
-var_dump($output, $result_code, $test);
+$id = create_json_data();
 
-//save_json_data($id, file_get_contents('../Hackathon_Output_v1.json'));
+$data = json_decode(get_json_data_by_id(243)['json_data'], true);
+
+// URL du service Python
+$url = "http://python-api:8000/search";
+ 
+// Paramètre à transmettre
+$prompt = "Foreign exchange (FX) risks for ".$company_data['identification']['name']." in EUR/GBP over March 2025, including macroeconomic trends, central bank policies, and geopolitical events affecting exchange rates. Impact on costs, pricing, and financial performance.";
+ 
+$params = [
+    'arg1' => $prompt,
+];
+ 
+// Construire l'URL complète avec les paramètres
+$query = http_build_query($params);
+$full_url = $url . '?' . $query;
+ 
+// Configurer un contexte HTTP avec un timeout plus long
+$context = stream_context_create([
+    'http' => [
+        'timeout' => 600, // Timeout de 360 secondes
+    ],
+]);
+ 
+// Effectuer la requête HTTP
+$output = @file_get_contents($full_url, false, $context);
+ 
+// Gérer les erreurs
+$search_path = __DIR__.'/../hackaton-search/rapport.md';
+$content = file_get_contents($search_path);
+
+$data['keyInsights']['strategic']['detailed_report'] = $content;
+
+save_json_data($id, $data);
+
+echo $id;
+exit;

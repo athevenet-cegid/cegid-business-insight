@@ -15,6 +15,14 @@
   <link rel="icon" type="image/x-icon" href="https://www.cegid.com/fr/wp-content/themes/cegid/assets/dist/images/favicon.ico" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
+        function showLoader() {
+          document.getElementById('modalLoader').style.display = 'flex';
+        }
+        
+        function hideLoader() {
+          document.getElementById('modalLoader').style.display = 'none';
+        }
+
         function loadContent(tab) {
             $.ajax({
                 url: 'index.php?tab=' + tab,
@@ -41,9 +49,26 @@
                 }
             });
         }
+
+        function refreshData() {
+            showLoader();
+            $.ajax({
+                url: 'cron/get_data.php',
+                success: function(data) {
+                    hideLoader();
+                    loadArchive(data);
+                }
+            });
+        }
     </script>
 </head>
 <body id="content">
+  <div class="modal-loader" id="modalLoader">
+    <div class="modal-content">
+      <div class="loader"></div>
+      <span class="loader-text">Renerating a new report...</span>
+    </div>
+  </div>
   <div class="app-container">
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
@@ -92,6 +117,8 @@
             <?php } else { ?>
             <span class="tag">Archive</span>
             <?php } ?>
+            &nbsp;&nbsp;
+            <a ><span class="fas fa-refresh" onClick="refreshData();"></span></a>
           </p>
         </div>
         
