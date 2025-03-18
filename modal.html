@@ -1,307 +1,245 @@
 <!-- AI Analysis Modal -->
 <div id="aiAnalysisModal" class="ai-modal-backdrop">
-    <div class="ai-modal">
-      <!-- Modal Header -->
-      <div class="ai-modal-header">
-        <div class="ai-header-title">
-          <div class="ai-icon-wrapper">
+  <div class="ai-modal">
+    <!-- Modal Header -->
+    <div class="ai-modal-header">
+      <div class="ai-header-title">
+        <div class="ai-icon-wrapper">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div class="ai-title-content">
+          <h2>Cegid Business Insights</h2>
+          <p>Alert Deep Dive</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="ai-modal-body" id="ai-modal-body">
+      <div id="aiConversation" class="ai-conversation">
+        <!-- Initial greeting -->
+        <div class="ai-message" id="greeting" style="display: none;">
+          <div class="ai-avatar">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="ai-content">
+            <div class="ai-bubble">
+              <p>Let's analyze this alert:</p>
+            </div>
+            <div class="ai-alert">
+              <p><i class="fas fa-triangle-exclamation"></i>
+                <span>Wheat Price Surge Alert</span>
+              </p>
+              <p class="mt-1">
+                <span>A <em>Barlia hordei</em> infestation threatens 63% of wheat crops in Ukraine.
+                This is causing an 18-22% increase in wheat prices and increased volatility for the next 90 days.
+                Impact analysis in progress.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart loading and display -->
+        <div class="ai-message" id="chartMessage" style="display: none;">
+          <div class="ai-avatar">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="ai-content">
+            <div class="ai-bubble ai-loading" id="chartLoading" style="display: none;">
+              <div class="ai-spinner"></div>
+              <p>Checking Wheat price history...</p>
+            </div>
+            
+            <div id="chartContainer" style="display: none;">
+              <div class="ai-chart-container">
+                <div class="ai-chart-header">
+                  <i class="fas fa-chart-line"></i>
+                  Wheat Price History - 90 Days
+                </div>
+                <div class="chart-area"><canvas id="wheatPriceChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data sources selection -->
+        <div class="ai-message" id="sourcesMessage" style="display: none;">
+          <div class="ai-avatar">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="ai-content">
+            <div class="ai-bubble ai-loading" id="sourcesLoading" style="display: none;">
+              <div class="ai-spinner"></div>
+              <p>Identifying relevant data sources...</p>
+            </div>
+            
+            <div id="sourcesList" style="display: none;" class="ai-sources-list">
+              <div class="ai-bubble">
+                <p>Selected data sources:</p>
+              </div>
+              <div class="ai-data-sources">
+                <!-- Data sources will be added dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data extraction -->
+        <div class="ai-message" id="analysisMessage" style="display: none;">
+          <div class="ai-avatar">
             <i class="fas fa-brain"></i>
           </div>
-          <div class="ai-title-content">
-            <h2>Cegid Insight</h2>
-            <p>AI-powered financial assistant</p>
+          <div class="ai-content">
+            <div class="ai-bubble ai-loading" id="analysisLoading" style="display: none;">
+              <div class="ai-spinner"></div>
+              <p>Extracting and analyzing sources...</p>
+              <div class="ai-progress">
+                <div class="ai-progress-bar"></div>
+              </div>
+            </div>
+            
+            <div id="analysisFindings" style="display: none;">
+              <div class="ai-bubble">
+                <p class="font-medium">
+                  I have collected and analyzed the sources. Here's what I found:
+                </p>
+              </div>
+              
+              <div class="ai-findings">
+                <div class="ai-finding" style="animation-delay: 0.1s;">
+                  <i class="fas fa-arrow-right"></i>
+                  <div class="ai-finding-content">
+                    <p>Price Projection</p>
+                    <p>Expected increase of 18-22% within 90 days.</p>
+                  </div>
+                </div>
+                <div class="ai-finding" style="animation-delay: 0.5s;">
+                  <i class="fas fa-arrow-right"></i>
+                  <div class="ai-finding-content">
+                    <p>Supply Chain Impact</p>
+                    <p>Moderate risk of disruption for the next 3 months.</p>
+                  </div>
+                </div>
+                <div class="ai-finding" style="animation-delay: 0.7s;">
+                  <i class="fas fa-arrow-right"></i>
+                  <div class="ai-finding-content">
+                    <p>Market Volatility</p>
+                    <p>Expected 35% increase in price volatility.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="ai-header-actions">
-          <div class="ai-badge">
+
+        <!-- Scenarios -->
+        <div class="ai-message" id="scenariosMessage" style="display: none;">
+          <div class="ai-avatar">
             <i class="fas fa-sparkles"></i>
-            AI Assistant
           </div>
-          <button id="aiToggleBtn" class="ai-toggle-btn">
-            <i class="fas fa-chevron-up"></i>
-          </button>
+          <div class="ai-content">
+            <div class="ai-bubble">
+              <p class="font-medium">
+                Based on these findings, Cegid Business Insights had identified potential actions:
+              </p>
+            </div>
+            
+            <div class="ai-scenarios">
+              <div class="ai-scenario-card scenario-1" data-scenario="1" style="animation-delay: 0.1s;">
+                <div class="ai-card-header">
+                  <div class="ai-card-icon">
+                    <i class="fas fa-file-lines"></i>
+                  </div>
+                  <div class="ai-card-title">Adjust Financial Forecasts in Cegid Exabanque</div>
+                </div>
+                <div class="ai-card-content">
+                  <div class="ai-card-impact">Forecast balance alignment with new cost projections</div>
+                  <div class="ai-card-description">Would you like to adjust the related forecasts in Cegid Exabanque?</div>
+                </div>
+                <div class="ai-card-footer">
+                  <button class="ai-action-btn scenario-action">
+                    <i class="fas fa-file-lines"></i>
+                    <span>Update the forecasts</span>
+                  </button>
+                  <div class="ai-action-state loading" style="display: none;">
+                    <i class="fas fa-spinner"></i>
+                    <span>Executing action...</span>
+                  </div>
+                  <div class="ai-action-state success" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Action executed</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="ai-scenario-card scenario-2" data-scenario="2" style="animation-delay: 0.3s;">
+                <div class="ai-card-header">
+                  <div class="ai-card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                  <div class="ai-card-title">Update Aging Balance in Cegid XRP Flex (disabled)</div>
+                </div>
+                <div class="ai-card-content">
+                  <div class="ai-card-impact">Preparation for expected cost increase</div>
+                  <div class="ai-card-description">Would you like to update the aging balance in Cegid XRP Flex?</div>
+                </div>
+                <div class="ai-card-footer">
+                  <button class="ai-action-btn scenario-action">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Modify aging balance</span>
+                  </button>
+                  <div class="ai-action-state loading" style="display: none;">
+                    <i class="fas fa-spinner"></i>
+                    <span>Executing action...</span>
+                  </div>
+                  <div class="ai-action-state success" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Action executed</span>
+                  </div>
+                </div>
+              </div>
+          </div>
         </div>
-      </div>
-  
-      <!-- Modal Body -->
-      <div class="ai-modal-body" id="ai-modal-body">
-        <div id="aiConversation" class="ai-conversation">
-          <!-- Initial greeting -->
-          <div class="ai-message" id="greeting" style="display: none;">
-            <div class="ai-avatar">
-              <i class="fas fa-robot"></i>
-            </div>
-            <div class="ai-content">
-              <div class="ai-bubble">
-                <p>Hello, I have detected an anomaly in your treasury balance.</p>
-              </div>
-              <div class="ai-alert">
-                <p><i class="fas fa-triangle-exclamation"></i>
-                  <span>📉 The treasury balance of EXASOLAR_FRANCE will be negative in 30 days (<span class="future-date">April 16, 2025</span>).</span>
-                </p>
-                <p class="mt-1">I will analyze the situation and identify possible causes.</p>
-              </div>
-            </div>
+
+        <!-- Action confirmation -->
+        <div class="ai-message" id="confirmationMessage" style="display: none;">
+          <div class="ai-avatar">
+            <i class="fas fa-check-circle"></i>
           </div>
-  
-          <!-- Chart loading and display -->
-          <div class="ai-message" id="chartMessage" style="display: none;">
-            <div class="ai-avatar">
-              <i class="fas fa-chart-line"></i>
+          <div class="ai-content">
+            <div class="ai-confirmation">
+              <p id="scenario1Confirmation" style="display: none;">
+                <i class="fas fa-check"></i>
+                <span>Forecasts updated in Cegid Exabanque.</span>
+              </p>
+              <p id="scenario2Confirmation" style="display: none;">
+                <i class="fas fa-check"></i>
+                <span>Aging balance adjusted in Cegid XRP Flex.</span>
+              </p>
             </div>
-            <div class="ai-content">
-              <div class="ai-bubble ai-loading" id="chartLoading" style="display: none;">
-                <div class="ai-spinner"></div>
-                <p>Analyzing treasury flow projections...</p>
-              </div>
-              
-              <div id="chartContainer" style="display: none;">
-                <div class="ai-chart-container">
-                  <div class="ai-chart-header">
-                    <i class="fas fa-chart-line"></i>
-                    Treasury Flow Projection - EXASOLAR_FRANCE
-                  </div>
-                  <div class="chart-area"><canvas id="treasuryChart"></canvas></div>
-                </div>
-                
-                <div class="ai-alert">
-                  <p><i class="fas fa-triangle-exclamation"></i>
-                    Your company's treasury balance is currently positive, but it will turn negative on 
-                    <span class="future-date">April 16, 2025</span> due to an imbalance between your inflows and outflows.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Data sources selection -->
-          <div class="ai-message" id="sourcesMessage" style="display: none;">
-            <div class="ai-avatar">
-              <i class="fas fa-database"></i>
-            </div>
-            <div class="ai-content">
-              <div class="ai-bubble ai-loading" id="sourcesLoading" style="display: none;">
-                <div class="ai-spinner"></div>
-                <p>Identifying relevant data sources...</p>
-              </div>
-              
-              <div id="sourcesList" style="display: none;" class="ai-sources-list">
-                <div class="ai-bubble">
-                  <p>Selected data sources:</p>
-                </div>
-                <div class="ai-data-sources">
-                  <!-- Data sources will be added dynamically -->
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Data extraction -->
-          <div class="ai-message" id="analysisMessage" style="display: none;">
-            <div class="ai-avatar">
-              <i class="fas fa-brain"></i>
-            </div>
-            <div class="ai-content">
-              <div class="ai-bubble ai-loading" id="analysisLoading" style="display: none;">
-                <div class="ai-spinner"></div>
-                <p>Extracting and analyzing financial data...</p>
-                <div class="ai-progress">
-                  <div class="ai-progress-bar"></div>
-                </div>
-              </div>
-              
-              <div id="analysisFindings" style="display: none;">
-                <div class="ai-bubble">
-                  <p class="font-medium">
-                    📊 I have collected and analyzed the necessary data. Here's what I found:
-                  </p>
-                </div>
-                
-                <div class="ai-findings">
-                  <div class="ai-finding" style="animation-delay: 0.1s;">
-                    <i class="fas fa-arrow-right"></i>
-                    <div class="ai-finding-content">
-                      <p>Financial Flows</p>
-                      <p>A significant drop in inflows expected from J+10 to J+20.</p>
-                    </div>
-                  </div>
-                  <div class="ai-finding" style="animation-delay: 0.3s;">
-                    <i class="fas fa-arrow-right"></i>
-                    <div class="ai-finding-content">
-                      <p>Client Delays</p>
-                      <p>Two overdue client invoices totaling €80K (75% probability of delayed payment).</p>
-                    </div>
-                  </div>
-                  <div class="ai-finding" style="animation-delay: 0.5s;">
-                    <i class="fas fa-arrow-right"></i>
-                    <div class="ai-finding-content">
-                      <p>Scheduled Supplier Payment</p>
-                      <p>A €100K transfer scheduled for J+15.</p>
-                    </div>
-                  </div>
-                  <div class="ai-finding" style="animation-delay: 0.7s;">
-                    <i class="fas fa-arrow-right"></i>
-                    <div class="ai-finding-content">
-                      <p>External Factors</p>
-                      <p>A 15% increase in a key supplier's costs due to rising raw material prices.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Scenarios -->
-          <div class="ai-message" id="scenariosMessage" style="display: none;">
-            <div class="ai-avatar">
-              <i class="fas fa-sparkles"></i>
-            </div>
-            <div class="ai-content">
-              <div class="ai-bubble">
-                <p class="font-medium">
-                  💡 Based on these findings, I have prepared several strategies to mitigate treasury stress.
-                </p>
-              </div>
-              
-              <div class="ai-scenarios">
-                <div class="ai-scenario-card scenario-1" data-scenario="1" style="animation-delay: 0.1s;">
-                  <div class="ai-card-header">
-                    <div class="ai-card-icon">
-                      <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <div class="ai-card-title">Immediately Follow Up with Late Clients</div>
-                  </div>
-                  <div class="ai-card-content">
-                    <div class="ai-card-impact">+€80K in treasury within 10 days</div>
-                    <div class="ai-card-description">I have prepared automated follow-ups. Would you like me to send them?</div>
-                  </div>
-                  <div class="ai-card-footer">
-                    <button class="ai-action-btn scenario-action">
-                      <i class="fas fa-paper-plane"></i>
-                      <span>Send Follow-Ups</span>
-                    </button>
-                    <div class="ai-action-state loading" style="display: none;">
-                      <i class="fas fa-spinner"></i>
-                      <span>Executing action...</span>
-                    </div>
-                    <div class="ai-action-state success" style="display: none;">
-                      <i class="fas fa-check-circle"></i>
-                      <span>Action executed</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="ai-scenario-card scenario-2" data-scenario="2" style="animation-delay: 0.3s;">
-                  <div class="ai-card-header">
-                    <div class="ai-card-icon">
-                      <i class="fas fa-file-lines"></i>
-                    </div>
-                    <div class="ai-card-title">Postpone Supplier Payment</div>
-                  </div>
-                  <div class="ai-card-content">
-                    <div class="ai-card-impact">+€100K within 15 days</div>
-                    <div class="ai-card-description">I have drafted an email requesting a supplier payment deferral. Would you like me to send it?</div>
-                  </div>
-                  <div class="ai-card-footer">
-                    <button class="ai-action-btn scenario-action">
-                      <i class="fas fa-file-lines"></i>
-                      <span>Send Request</span>
-                    </button>
-                    <div class="ai-action-state loading" style="display: none;">
-                      <i class="fas fa-spinner"></i>
-                      <span>Executing action...</span>
-                    </div>
-                    <div class="ai-action-state success" style="display: none;">
-                      <i class="fas fa-check-circle"></i>
-                      <span>Action executed</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div class="ai-scenario-card scenario-3" data-scenario="3" style="animation-delay: 0.5s;">
-                  <div class="ai-card-header">
-                    <div class="ai-card-icon">
-                      <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="ai-card-title">Activate a Line of Credit</div>
-                  </div>
-                  <div class="ai-card-content">
-                    <div class="ai-card-impact">+€150K, with an interest cost of 2.5% per month</div>
-                    <div class="ai-card-description">I can generate a financing request with your bank.</div>
-                  </div>
-                  <div class="ai-card-footer">
-                    <button class="ai-action-btn scenario-action">
-                      <i class="fas fa-chart-bar"></i>
-                      <span>Simulate Request</span>
-                    </button>
-                    <div class="ai-action-state loading" style="display: none;">
-                      <i class="fas fa-spinner"></i>
-                      <span>Executing action...</span>
-                    </div>
-                    <div class="ai-action-state success" style="display: none;">
-                      <i class="fas fa-check-circle"></i>
-                      <span>Action executed</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Action confirmation -->
-          <div class="ai-message" id="confirmationMessage" style="display: none;">
-            <div class="ai-avatar">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="ai-content">
-              <div class="ai-confirmation">
-                <p id="scenario1Confirmation" style="display: none;">
-                  <i class="fas fa-check"></i>
-                  <span>📧 Follow-up emails sent to clients. I will notify you once we receive a response.</span>
-                </p>
-                <p id="scenario2Confirmation" style="display: none;">
-                  <i class="fas fa-check"></i>
-                  <span>📞 Payment deferral request sent to the supplier. Awaiting response.</span>
-                </p>
-                <p id="scenario3Confirmation" style="display: none;">
-                  <i class="fas fa-check"></i>
-                  <span>🏦 Credit line simulation completed. Here are the proposed options: Option A (2.3%), Option B (2.5%), Option C (2.7%).</span>
-                </p>
-              </div>
-              
-              <div class="ai-summary" id="summary" style="display: none;">
-                <p class="font-medium">
-                  📊 Situation optimized: Your projected treasury balance is now stable.
-                </p>
-                <p class="mt-1">
-                  I'll continue monitoring the situation and will alert you if any further action is needed.
-                </p>
-                
-                <div class="ai-summary-footer">
-                  <p>Next steps:</p>
-                  <ul>
-                    <li>Monitor client payment status daily</li>
-                    <li>Review supplier terms for future cost optimization</li>
-                    <li>Prepare contingency plan for similar scenarios</li>
-                  </ul>
-                </div>
-              </div>
+            
+            <div class="ai-summary" id="summary" style="display: none;">
+              <p class="font-medium">
+                Necessary actions have been implemented to anticipate the impact of rising wheat prices.
+              </p>
+              <p class="mt-1">
+                I will continue to monitor price developments and alert you of any significant changes.
+              </p>
             </div>
           </div>
         </div>
-      </div>
-  
-      <!-- Modal Footer -->
-      <div class="ai-modal-footer">
-        <div class="ai-footer-status" id="footerDefault">
-          <span>AI-powered financial analysis</span>
-        </div>
-        <div class="ai-footer-status success" id="footerSuccess" style="display: none;">
-          <i class="fas fa-check-circle"></i>
-          <span>Action completed successfully</span>
-        </div>
-        <button id="aiCloseBtn" class="ai-close-btn">Close</button>
       </div>
     </div>
   </div>
-  
+  <!-- Modal Footer -->
+  <div class="ai-modal-footer">
+    <div class="ai-footer-status" id="footerDefault">
+      <span>Powered by Cegid Pulse</span>
+    </div>
+    <div class="ai-footer-status success" id="footerSuccess" style="display: none;">
+      <i class="fas fa-check-circle"></i>
+      <span>Action completed successfully</span>
+    </div>
+    <button id="aiCloseBtn" class="ai-close-btn">Close</button>
+  </div>
+</div>
