@@ -101,11 +101,11 @@ function get_current_subtab()
 function get_tab_list()
 {
     return [
-        'dashboard' => 'Tableau de bord',
-        'companies' => 'Sociétés',
-        'suppliers' => 'Fournisseurs',
-        'risks' => 'Risques',
-        'analysis' => 'Analyses',
+        'dashboard' => 'Dashboard',
+        'news' => 'News',
+        'markets' => 'Exchange risk',
+        'suppliers' => 'Third parties risk',
+        'alerts' => 'Alerts',
         'archives' => 'Archives',
     ];
 }

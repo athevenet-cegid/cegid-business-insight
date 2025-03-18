@@ -807,7 +807,6 @@ p {
   cursor: pointer;
   transition: background-color var(--transition-fast);
   font-size: 0.875rem;
-  margin-top: auto;
 }
 
 .btn-primary:hover {
