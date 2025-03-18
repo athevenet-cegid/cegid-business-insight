@@ -118,7 +118,7 @@
             <span class="tag">Archive</span>
             <?php } ?>
             &nbsp;&nbsp;
-            <a ><span class="fas fa-refresh" onClick="refreshData();"></span></a>
+            <a title="Renerate a new report"><span class="fas fa-refresh" onClick="refreshData();"></span></a>
           </p>
         </div>
         
@@ -181,7 +181,7 @@
           <?php } ?>
           
           <!-- Market Indicators Section -->
-          <?php include 'html/markets.html'; ?>
+          <?php //include 'html/markets.html'; ?>
           
           <?php $newsSentiment = extract_json_data(['newsSentiment', 'news']); ?>
           <?php $alerts = extract_json_data(['alerts']); ?>
@@ -314,7 +314,7 @@
         return Array.from({ length: 20 }, () => Math.floor(Math.random() * 100));
       }
       
-      <?php if (get_current_tab() === 'dashboard' || get_current_tab() === 'markets') { ?>
+      <?php if (get_current_tab() === 'markets') { ?>
       // Create stock charts
       const charts = ['S_P500Chart', 'NASDAQChart', 'DOWChart'];
       charts.forEach(id => {

@@ -542,7 +542,6 @@ p {
   padding: var(--space-4);
   border: 1px solid var(--border-neutral-decorative);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
-  height: 181px;
 }
 
 .market-card:hover {
