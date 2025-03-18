@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cegid Business Insights</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/markdown.css">
+  <link rel="stylesheet" href="<?php echo get_last_modified('css/styles.css'); ?>">
+  <link rel="stylesheet" href="<?php echo get_last_modified('css/markdown.css'); ?>">
+  <link rel="stylesheet" href="<?php echo get_last_modified('css/modal.css'); ?>">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script type="text/javascript" src="<?php echo get_last_modified('js/jquery.js'); ?>"></script>
   <script type="text/javascript" src="<?php echo get_last_modified('js/jquery-ui.js'); ?>"></script>
+  <script type="text/javascript" src="<?php echo get_last_modified('js/modal.js'); ?>"></script>
   <link rel="icon" type="image/x-icon" href="https://www.cegid.com/fr/wp-content/themes/cegid/assets/dist/images/favicon.ico" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
@@ -211,6 +213,31 @@
             </div>
           </section>
         <?php } ?>
+
+      <script>
+        $(document).ready(function() {
+          // Add the CSS for the modal
+          $('head').append('<link rel="stylesheet" href="css/modal.css">');
+          
+          // Load the modal content
+          $.ajax({
+            url: 'html/modal.html',
+            dataType: 'html',
+            success: function(data) {
+              $('body').append(data);
+              
+              // Load the JavaScript for the modal
+              $.getScript('js/modal.js', function() {
+                // Add click handler for the button
+                $('.showAIAnalysisBtn').on('click', function() {
+                  // Open the modal with your future date
+                  openAIModal('April 16, 2025');
+                });
+              });
+            }
+          });
+        });
+      </script>
       </div>
     </main>
   </div>
