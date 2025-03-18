@@ -237,16 +237,19 @@ function resetModalState() {
 function startAnalysis() {
   // Show greeting message
   $('#greeting').fadeIn(800);
+  $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
   
   // After a delay, start chart analysis
   setTimeout(() => {
     $('#chartMessage').fadeIn(500);
     $('#chartLoading').fadeIn(300);
+    $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
     
     // After loading, show the chart
     setTimeout(() => {
       $('#chartLoading').fadeOut(300, () => {
         $('#chartContainer').fadeIn(500);
+        $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
         
         // Initialize the chart
         const treasuryData = generateTreasuryData();
@@ -256,6 +259,7 @@ function startAnalysis() {
         setTimeout(() => {
           $('#sourcesMessage').fadeIn(500);
           $('#sourcesLoading').fadeIn(300);
+          $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
           
           // Load sources one by one
           const sources = [
@@ -279,20 +283,24 @@ function startAnalysis() {
               setTimeout(() => {
                 $('#sourcesLoading').fadeOut(300, () => {
                   $('#sourcesList').fadeIn(500);
+                  $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
                   
                   // Start data extraction phase
                   setTimeout(() => {
                     $('#analysisMessage').fadeIn(500);
                     $('#analysisLoading').fadeIn(300);
+                    $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
                     
                     // After extraction, show findings
                     setTimeout(() => {
                       $('#analysisLoading').fadeOut(300, () => {
                         $('#analysisFindings').fadeIn(500);
+                        $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
                         
                         // Show scenarios
                         setTimeout(() => {
                           $('#scenariosMessage').fadeIn(500);
+                          $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
                         }, 1500);
                       });
                     }, 3000);
