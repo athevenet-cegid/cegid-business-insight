@@ -425,10 +425,6 @@
   padding: 10px var(--space-4) var(--space-2);
 }
 
-#confirmationMessage {
-  max-width: 46%;
-}
-
 .ai-card-impact {
   font-size: 0.875rem;
   font-weight: 500;

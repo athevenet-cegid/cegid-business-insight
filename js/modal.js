@@ -138,14 +138,17 @@ function handleScenarioSelect(scenarioId) {
     // Show confirmation message
     $('#confirmationMessage').fadeIn(500);
     $(`#scenario${scenarioId}Confirmation`).show();
+    $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
     
     // Show optimization summary after a delay
     setTimeout(() => {
-      $('#summary').fadeIn(500);
+      $('#summary').fadeIn(500, function(){
+        $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
+      });
       $('#footerDefault').hide();
       $('#footerSuccess').show();
-    }, 1500);
-  }, 2500);
+    }, 500);
+  }, 500);
 }
 
 // Function to toggle expanded/collapsed view
