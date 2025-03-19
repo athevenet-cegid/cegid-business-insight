@@ -8,6 +8,9 @@ $id = create_json_data();
 
 $data = json_decode(get_json_data_by_id(243)['json_data'], true);
 
+sleep(30);
+
+/*
 // URL du service Python
 $url = "http://python-api:8000/search";
  
@@ -37,7 +40,7 @@ $search_path = __DIR__.'/../hackaton-search/rapport.md';
 $content = file_get_contents($search_path);
 
 $data['marketIndicators']['forex']['assessment']['detailed_report'] = $content;
-
+*/
 save_json_data($id, $data);
 
 echo $id;

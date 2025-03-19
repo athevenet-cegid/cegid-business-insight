@@ -284,6 +284,8 @@
   font-size: 0.875rem;
   color: var(--text-neutral-high);
   animation: fadeIn 0.5s ease forwards;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .ai-data-source-icon {
@@ -335,6 +337,8 @@
   font-size: 0.875rem;
   color: var(--text-neutral-high);
   animation: fadeIn 0.5s ease forwards;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .ai-finding i {
@@ -422,7 +426,7 @@
 }
 
 #confirmationMessage {
-  max-width: 50%;
+  max-width: 46%;
 }
 
 .ai-card-impact {
@@ -754,4 +758,42 @@
     padding: var(--space-2);
     font-size: 0.8rem;
   }
+}
+
+/* Disabled scenario card styles */
+.ai-scenario-card.scenario-2.disabled {
+  opacity: 0.6;
+  background-color: #f5f5f5;
+  pointer-events: none;
+  border-color: #e0e0e0;
+  box-shadow: none;
+  transform: none;
+}
+ 
+.ai-scenario-card.scenario-2.disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #e0e0e0;
+}
+ 
+.ai-scenario-card.scenario-2.disabled .ai-card-icon {
+  background-color: #e0e0e0;
+}
+ 
+.ai-scenario-card.scenario-2.disabled .ai-card-icon i,
+.ai-scenario-card.scenario-2.disabled .ai-card-impact,
+.ai-scenario-card.scenario-2.disabled .ai-card-title,
+.ai-scenario-card.scenario-2.disabled .ai-card-description {
+  color: #999;
+}
+ 
+.ai-scenario-card.scenario-2.disabled .ai-action-btn {
+  background-color: #e0e0e0;
+  color: #999;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+ 
+.ai-scenario-card.scenario-2.disabled .ai-action-btn:hover {
+  background-color: #e0e0e0;
 }

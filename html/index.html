@@ -60,6 +60,244 @@
                 }
             });
         }
+        function createAIButton(parentElement, options = {}) {
+  const {
+    text = "Ask AI",
+    tooltip = "Ask AI Assistant",
+    onClick = () => {},
+    isCircle = false,
+    position = null
+  } = options;
+
+  // Create button elements
+  const button = document.createElement('button');
+  button.className = `ai-button ${isCircle ? 'ai-button-circle' : ''}`;
+  if (position) {
+    button.style.position = 'fixed';
+    button.style.bottom = position.bottom || '20px';
+    button.style.right = position.right || '20px';
+    button.style.zIndex = position.zIndex || '100';
+  }
+  
+  // Create icon container
+  const iconContainer = document.createElement('div');
+  iconContainer.className = 'icon-container';
+  
+  // Create brain icon (SVG)
+  const brainIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  brainIcon.setAttribute('viewBox', '0 0 24 24');
+  brainIcon.setAttribute('width', '24');
+  brainIcon.setAttribute('height', '24');
+  brainIcon.setAttribute('fill', 'none');
+  brainIcon.setAttribute('stroke', 'currentColor');
+  brainIcon.setAttribute('stroke-width', '2');
+  brainIcon.setAttribute('stroke-linecap', 'round');
+  brainIcon.setAttribute('stroke-linejoin', 'round');
+  brainIcon.className = 'brain-icon';
+  
+  // Brain SVG path
+  brainIcon.innerHTML = `
+    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z" />
+    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z" />
+  `;
+  
+  // Create circuit icon (SVG)
+  const circuitIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  circuitIcon.setAttribute('viewBox', '0 0 24 24');
+  circuitIcon.setAttribute('width', '24');
+  circuitIcon.setAttribute('height', '24');
+  circuitIcon.setAttribute('fill', 'none');
+  circuitIcon.setAttribute('stroke', 'currentColor');
+  circuitIcon.setAttribute('stroke-width', '2');
+  circuitIcon.setAttribute('stroke-linecap', 'round');
+  circuitIcon.setAttribute('stroke-linejoin', 'round');
+  circuitIcon.className = 'circuit-icon';
+  
+  // Circuit SVG path
+  circuitIcon.innerHTML = `
+    <path d="M12 2H2v10h10V2Z" />
+    <path d="M5 15v2" />
+    <path d="M2 5H0" />
+    <path d="M5 9v-2" />
+    <path d="M14 5h-2" />
+    <path d="M9 9h2" />
+    <path d="M19 5V2h-3" />
+    <path d="M5 19h3v-3" />
+    <path d="M22 22v-3h-3" />
+    <path d="M22 12v3h-3" />
+    <path d="M12 19h3v-3" />
+    <path d="M19 12h-3v3" />
+  `;
+  
+  // Add spinner for loading state
+  const spinner = document.createElement('div');
+  spinner.className = 'loading-spinner';
+  
+  // Add button text span
+  const buttonText = document.createElement('span');
+  buttonText.className = 'button-text';
+  buttonText.textContent = text;
+  
+  // Add neural network animation
+  const neuralNetwork = document.createElement('div');
+  neuralNetwork.className = 'neural-network';
+  
+  // Add tooltip for circle button
+  if (isCircle) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'ai-action-tooltip';
+    tooltip.textContent = options.tooltip;
+    button.appendChild(tooltip);
+  }
+  
+  // Assemble button
+  iconContainer.appendChild(brainIcon);
+  iconContainer.appendChild(circuitIcon);
+  button.appendChild(iconContainer);
+  button.appendChild(spinner);
+  button.appendChild(buttonText);
+  button.appendChild(neuralNetwork);
+  
+  // Create neural network animation elements
+  createNeuralNetwork(neuralNetwork);
+  
+  // Add event listeners
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Show loading state
+    button.classList.add('loading');
+    
+    // Call the provided callback
+    const promise = onClick();
+    
+    // If the callback returns a promise, handle loading state
+    if (promise && typeof promise.then === 'function') {
+      promise.finally(() => {
+        button.classList.remove('loading');
+      });
+    } else {
+      // If not a promise, remove loading after a short delay
+      setTimeout(() => {
+        button.classList.remove('loading');
+      }, 1000);
+    }
+  });
+  
+  // Auto pulsing animation after inactive time
+  let inactivityTimer;
+  const startPulsing = () => {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+      button.classList.add('pulsing');
+    }, 30000); // Start pulsing after 30 seconds of inactivity
+  };
+  
+  const stopPulsing = () => {
+    clearTimeout(inactivityTimer);
+    button.classList.remove('pulsing');
+    startPulsing();
+  };
+  
+  // Initialize inactivity timer
+  startPulsing();
+  
+  // Add event listeners to reset timer
+  document.addEventListener('mousemove', stopPulsing);
+  document.addEventListener('keydown', stopPulsing);
+  document.addEventListener('click', stopPulsing);
+  
+  // Append button to parent
+  parentElement.appendChild(button);
+  
+  // Return button element and control methods
+  return {
+    element: button,
+    setLoading: (isLoading) => {
+      if (isLoading) {
+        button.classList.add('loading');
+      } else {
+        button.classList.remove('loading');
+      }
+    },
+    setText: (newText) => {
+      buttonText.textContent = newText;
+    },
+    setTooltip: (newTooltip) => {
+      if (isCircle && button.querySelector('.ai-action-tooltip')) {
+        button.querySelector('.ai-action-tooltip').textContent = newTooltip;
+      }
+    },
+    remove: () => {
+      document.removeEventListener('mousemove', stopPulsing);
+      document.removeEventListener('keydown', stopPulsing);
+      document.removeEventListener('click', stopPulsing);
+      button.remove();
+    }
+  };
+}
+
+// Helper function to create neural network animation
+function createNeuralNetwork(container) {
+  // Number of nodes
+  const nodeCount = 12;
+  const nodes = [];
+  
+  // Create nodes
+  for (let i = 0; i < nodeCount; i++) {
+    const node = document.createElement('div');
+    node.className = 'neural-node';
+    
+    // Random position within the container
+    const x = Math.random() * 100;
+    const y = Math.random() * 100;
+    
+    node.style.left = `${x}%`;
+    node.style.top = `${y}%`;
+    
+    container.appendChild(node);
+    nodes.push({ element: node, x, y });
+  }
+  
+  // Create connections between nodes
+  for (let i = 0; i < nodes.length; i++) {
+    // Connect to 2-3 other nodes
+    const connectionsCount = 2 + Math.floor(Math.random() * 2);
+    
+    for (let j = 0; j < connectionsCount; j++) {
+      // Select a random target node that's not the current node
+      let targetIndex;
+      do {
+        targetIndex = Math.floor(Math.random() * nodes.length);
+      } while (targetIndex === i);
+      
+      const sourceNode = nodes[i];
+      const targetNode = nodes[targetIndex];
+      
+      // Calculate the distance and angle between nodes
+      const dx = targetNode.x - sourceNode.x;
+      const dy = targetNode.y - sourceNode.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+      
+      // Create connection line
+      const connection = document.createElement('div');
+      connection.className = 'neural-connection';
+      
+      // Position and rotate the connection line
+      connection.style.width = `${distance}%`;
+      connection.style.left = `${sourceNode.x}%`;
+      connection.style.top = `${sourceNode.y}%`;
+      connection.style.transform = `rotate(${angle}deg)`;
+      
+      container.appendChild(connection);
+    }
+  }
+}
+
+// Export the function to be used in other files
+window.createAIButton = createAIButton;
+
     </script>
 </head>
 <body id="content">
@@ -142,6 +380,7 @@
               <div class="insight-header">
                 <div class="chip"><?php echo get_current_subtab(); ?></div>
                 <!--<div class="score" id="strategic-score"><?php echo $keyInsight['score']; ?></div>-->
+                <button class="btn-primary showAIAnalysisBtn">Analyze</button>
               </div>
               <h3 id="strategic-title"><?php echo $keyInsight['title']; ?></h3>
               <span class="markdown-container">
@@ -163,7 +402,13 @@
             </div>
             
             <div class="insights-cards">
-              <?php foreach ($keyInsights as $key => $keyInsight) { ?>
+              <?php 
+              $count = 0;
+              foreach ($keyInsights as $key => $keyInsight) {
+                if ($count >=2 && $_SESSION['hackathon']->current_report['id'] == 243) {
+                  break;
+                }
+                $count++; ?>
               <div class="insight-card <?php echo $key; ?>">
                 <div class="insight-header">
                   <div class="chip"><?php echo $key; ?></div>

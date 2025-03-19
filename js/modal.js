@@ -12,98 +12,6 @@ function updateFutureDate(date) {
   });
 }
 
-// Function to generate wheat price data
-function generateWheatPriceData() {
-  const data = []
-  const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep"]
-  const basePrice = 280 // Base price in euros
-
-  // Generate data with increasing prices (18-22% increase over 90 days)
-  for (let i = 0; i < months.length; i++) {
-    let projectedPrice
-
-    if (i === 0) {
-      // First month - same as base price
-      projectedPrice = basePrice
-    } else if (i === 3) {
-      // Peak in July (4th month)
-      projectedPrice = Math.round(basePrice * 1.22)
-    } else if (i > 3) {
-      // Slight decrease after peak
-      projectedPrice = Math.round(basePrice * (1.22 - (i - 3) * 0.01))
-    } else {
-      // Gradual increase
-      projectedPrice = Math.round(basePrice * (1 + i * 0.07))
-    }
-
-    data.push({
-      month: months[i],
-      current: basePrice,
-      projected: projectedPrice,
-    })
-  }
-
-  return data
-}
-
-// Function to create wheat price chart
-function createWheatPriceChart(data) {
-  const ctx = document.getElementById("wheatPriceChart").getContext("2d")
-
-  // Create gradient for bars
-  const currentGradient = ctx.createLinearGradient(0, 0, 0, 400)
-  currentGradient.addColorStop(0, "rgba(99, 102, 241, 0.8)")
-  currentGradient.addColorStop(1, "rgba(99, 102, 241, 0.3)")
-
-  const projectedGradient = ctx.createLinearGradient(0, 0, 0, 400)
-  projectedGradient.addColorStop(0, "rgba(239, 68, 68, 0.8)")
-  projectedGradient.addColorStop(1, "rgba(239, 68, 68, 0.3)")
-
-  const chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: data.map((item) => item.month),
-      datasets: [
-        {
-          label: "Current Price",
-          data: data.map((item) => item.current),
-          backgroundColor: currentGradient,
-          borderColor: "rgba(99, 102, 241, 1)",
-          borderWidth: 1,
-        },
-        {
-          label: "Historic Price",
-          data: data.map((item) => item.projected),
-          backgroundColor: projectedGradient,
-          borderColor: "rgba(239, 68, 68, 1)",
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          ticks: {
-            callback: (value) => "€" + value,
-          },
-          min: 0,
-          max: 400,
-        },
-      },
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: (context) => context.dataset.label + ": €" + context.raw,
-          },
-        },
-      },
-    },
-  })
-
-  return chart
-}
 
 // Function to open the modal
 function openAIModal(customFutureDate) {
@@ -154,77 +62,57 @@ function startAnalysis() {
   $('#greeting').fadeIn(800);
   $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
   
-  // After a delay, start chart analysis
   setTimeout(() => {
-    $('#chartMessage').fadeIn(500);
-    $('#chartLoading').fadeIn(300);
+    $('#sourcesMessage').fadeIn(500);
+    $('#sourcesLoading').fadeIn(300);
     $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
     
-    // After loading, show the chart
-    setTimeout(() => {
-      $('#chartLoading').fadeOut(300, () => {
-        $('#chartContainer').fadeIn(500);
-        $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
+    // Load sources one by one
+    const sources = [
+      "90-day wheat price forecasts (World Bank, Euronext)",
+      "Geopolitical risk assessment affecting the wheat market (Reuters, Financial Times)"
+    ];
+    
+    let sourceIndex = 0;
+    const sourceInterval = setInterval(() => {
+      if (sourceIndex < sources.length) {
+        const source = sources[sourceIndex];
+        const $sourceElement = $(`<div class="ai-data-source" style="animation-delay: ${sourceIndex * 0.2}s;"><div class="ai-data-source-icon"><i class="fas fa-check"></i></div><p>${source}</p></div>`);
+        $('.ai-data-sources').append($sourceElement);
+        sourceIndex++;
+      } else {
+        clearInterval(sourceInterval);
         
-        // Initialize the chart
-        const wheatPriceData = generateWheatPriceData();
-        createWheatPriceChart(wheatPriceData);
-        
-        // After chart is shown, load data sources
+        // When all sources are loaded, hide loading and show sources list
         setTimeout(() => {
-          $('#sourcesMessage').fadeIn(500);
-          $('#sourcesLoading').fadeIn(300);
-          $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
-          
-          // Load sources one by one
-          const sources = [
-            "90-day wheat price forecasts (World Bank, Euronext)",
-            "Geopolitical risk assessment affecting the wheat market (Reuters, Financial Times)"
-          ];
-          
-          let sourceIndex = 0;
-          const sourceInterval = setInterval(() => {
-            if (sourceIndex < sources.length) {
-              const source = sources[sourceIndex];
-              const $sourceElement = $(`<div class="ai-data-source" style="animation-delay: ${sourceIndex * 0.2}s;"><div class="ai-data-source-icon"><i class="fas fa-check"></i></div><p>${source}</p></div>`);
-              $('.ai-data-sources').append($sourceElement);
-              sourceIndex++;
-            } else {
-              clearInterval(sourceInterval);
+          $('#sourcesLoading').fadeOut(300, () => {
+            $('#sourcesList').fadeIn(500);
+            $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
+            
+            // Start data extraction phase
+            setTimeout(() => {
+              $('#analysisMessage').fadeIn(500);
+              $('#analysisLoading').fadeIn(300);
+              $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
               
-              // When all sources are loaded, hide loading and show sources list
+              // After extraction, show findings
               setTimeout(() => {
-                $('#sourcesLoading').fadeOut(300, () => {
-                  $('#sourcesList').fadeIn(500);
+                $('#analysisLoading').fadeOut(300, () => {
+                  $('#analysisFindings').fadeIn(500);
                   $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
                   
-                  // Start data extraction phase
+                  // Show scenarios
                   setTimeout(() => {
-                    $('#analysisMessage').fadeIn(500);
-                    $('#analysisLoading').fadeIn(300);
+                    $('#scenariosMessage').fadeIn(500);
                     $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
-                    
-                    // After extraction, show findings
-                    setTimeout(() => {
-                      $('#analysisLoading').fadeOut(300, () => {
-                        $('#analysisFindings').fadeIn(500);
-                        $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
-                        
-                        // Show scenarios
-                        setTimeout(() => {
-                          $('#scenariosMessage').fadeIn(500);
-                          $("#ai-modal-body").animate({ scrollTop: $('#ai-modal-body').prop("scrollHeight")}, 500);
-                        }, 1500);
-                      });
-                    }, 3000);
-                  }, 1000);
+                  }, 1500);
                 });
-              }, 800);
-            }
-          }, 1200);
-        }, 1500);
-      });
-    }, 3000);
+              }, 3000);
+            }, 1000);
+          });
+        }, 800);
+      }
+    }, 1200);
   }, 1500);
 }
 
