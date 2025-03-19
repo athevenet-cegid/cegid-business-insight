@@ -348,7 +348,7 @@ window.createAIButton = createAIButton;
         <div class="header-title">
           <h1 id="dashboard-name"><?php echo get_tab_name(); ?></h1>
           <p id="dashboard-date">
-            <?php echo format_date(extract_json_data(['dashboard', 'date'])); ?>
+            <?php echo format_date($_SESSION['hackathon']->current_report['json_date']); ?>
             &nbsp;&nbsp;
             <?php if ($_SESSION['hackathon']->is_last_report === true) { ?>
             <span class="tag positive">Last report</span>
