@@ -1128,7 +1128,7 @@ p {
  
 .loader-text {
   color: #002C52; /* CdsColorTextNeutralHighEmphasis */
-  font-family: Arial, sans-serif;
+  font-family: var(--font-family);
   font-size: 16px;
 }
  
