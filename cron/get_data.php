@@ -8,7 +8,7 @@ $id = create_json_data();
 
 $data = json_decode(get_json_data_by_id(243)['json_data'], true);
 
-sleep(30);
+sleep(15);
 
 /*
 // URL du service Python
