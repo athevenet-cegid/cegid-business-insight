@@ -407,6 +407,8 @@ window.createAIButton = createAIButton;
               foreach ($keyInsights as $key => $keyInsight) {
                 if ($count >=2 && $_SESSION['hackathon']->current_report['id'] == 243) {
                   break;
+                } elseif ($count >= 3) {
+                  break;
                 }
                 $count++; ?>
               <div class="insight-card <?php echo $key; ?>">
