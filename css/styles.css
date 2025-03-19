@@ -214,8 +214,13 @@ p {
 
 .bottom-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 3fr 3fr;
   gap: var(--space-6);
+}
+
+.bottom-row .section  {
+  margin: auto;
+  margin-top: 0px;
 }
 
 /* ============== Sidebar ============== */
